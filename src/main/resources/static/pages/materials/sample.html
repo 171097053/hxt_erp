@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>样品信息</title>
+    <meta charset="utf-8">
+    <!-- 指定以IE8的方式来渲染 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/jsherp.css"/>
+    <script type="text/javascript" src="/js/jquery-1.8.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/gray/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/common.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/material.css"/>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/js/easyui/datagrid-dnd.js"></script>
+    <script src="/js/handlebars.js"></script>
+    <script type="text/javascript" src="/js/common/outlook_in.js"></script>
+    <script type="text/javascript" src="/js/common/common.js"></script>
+    <script src="/js/common/jsherp.js"></script>
+    <script src="/js/ajaxfileupload.js" type="text/javascript"></script>
+</head>
+<style>
+    /*控制網格數據的格式*/
+    .datagrid-cell {
+        font-size: 10px;
+    }
+
+    /*控制標題的格式*/
+    .datagrid-header-row .datagrid-cell span {
+        white-space: normal !important;
+        word-wrap: normal !important;
+        font-size: 8px;
+        color: red;
+        font-weight: bolder;
+    }
+</style>
+<body>
+<!-- 数据显示table  id="tablePanel-->
+<div id="tablePanel" class="easyui-panel" data-options="fit:true" style="padding:5px" title="样品列表" iconCls="icon-list">
+    <div class="box-body form-inline">
+
+        <!--<div class="form-group">
+            <label class="control-label">条码：</label>
+            <div class="control-inline">
+                &lt;!&ndash; id="searchBarCode" 条码 &ndash;&gt;
+                <input type="text" id="searchBarCode" name="searchBarCode" value="" maxlength="100" class="easyui-textbox width-90"/>
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="control-label" style="color:green;font-weight: bolder">名称：</label>
+            <div class="control-inline">
+                <!-- id="searchName" 名称 -->
+                <input type="text" id="searchName" name="searchName" value="" maxlength="100" style="width: 200px;"
+                       class="width-3000"/>
+            </div>
+        </div>
+        <!-- <div class="form-group">
+             <label class="control-label" style="color:green;font-weight: bolder">公司SKU：</label>
+             <div class="control-inline">
+
+                 <input type="text" id="searchCompanySku" name="searchCompanySku" value="" maxlength="100"
+                        style="width: 200px" class="easyui-textbox"/>
+             </div>
+         </div>-->
+        <!-- <div class="form-group">
+             <label class="control-label" style="color:green;font-weight: bolder">FNSKU：</label>
+             <div class="control-inline">
+
+                 <input type="text" id="searchFnsku" name="searchFnsku" value="" maxlength="100" style="width: 200px"
+                        class="easyui-textbox"/>
+             </div>
+         </div>-->
+        <div class="form-group">
+            <label class="control-label" style="color:green;font-weight: bolder">品牌：</label>
+            <div class="control-inline">
+
+                <input type="text" id="searchBrand" name="searchBrand" value="" maxlength="100" style="width: 200px"
+                       class="easyui-textbox"/>
+            </div>
+        </div>
+        <!-- <div class="form-group">
+             <label class="control-label">规格：</label>
+             <div class="control-inline">
+                 &lt;!&ndash; id="searchStandard" 规格 &ndash;&gt;
+                 <input type="text" id="searchStandard" name="searchStandard" value="" maxlength="100" class="easyui-textbox width-90"/>
+             </div>
+         </div>-->
+        <!--<div class="form-group">
+            <label class="control-label">型号：</label>
+            <div class="control-inline">
+                &lt;!&ndash; id="searchModel" 型号 &ndash;&gt;
+                <input type="text" id="searchModel" name="searchModel" value="" maxlength="100" class="easyui-textbox width-90"/>
+            </div>
+        </div>-->
+        <!--<div class="form-group">
+            <label class="control-label" style="color: green;font-weight: bolder">类别：</label>
+            <div class="control-inline">
+                &lt;!&ndash;&lt;!&ndash;类别的input框&ndash;&gt;&ndash;&gt;
+                <input name="searchParentName" id="searchParentName"  class="easyui-textbox" style="width: 200px;" readonly="readonly"/>
+                &lt;!&ndash;&lt;!&ndash;类别选项放大镜 id=lookForSelectMaterialCategory&ndash;&gt;&ndash;&gt;
+                <a href="javascript:void(0)" class="l-btn l-btn-plain" group="" style="height: 25px;" id="lookForSelectMaterialCategory">
+                    <span class="l-btn-left">
+                        <span class="l-btn-text icon-search l-btn-icon-left" style="height: 20px"></span>
+                    </span>
+                </a>
+                &lt;!&ndash;&lt;!&ndash; 类别id的隐藏域用于存放数据，在页面不显示所以用隐藏域 id=searchParentId&ndash;&gt;&ndash;&gt;
+                <input name="searchParentId" id="searchParentId" type="hidden"/>
+            </div>
+        </div>-->
+        <div class="form-group">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" id="searchBtn">查询</a>&nbsp;
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-redo" id="searchResetBtn">重置</a>
+        </div>
+    </div>
+    <!-- 数据网格 id="tableData"-->
+    <table id="tableData" style="top:800px;border-bottom-color:#FFFFFF"></table>
+</div>
+
+<!--基本搜索结束-->
+
+<!--<div id="materialDetailListDlg" class="easyui-dialog" style="width:900px;height:500px;padding:10px 20px" closed="true"
+     modal="true" collapsible="false" closable="true">
+    <table id="materialTableData" style="top:50px;border-bottom-color:#FFFFFF"></table>
+</div>-->
+<!--添加商品的基本信息的框框-->
+<div id="sampleDlg" class="easyui-dialog" style="padding:10px 20px" fit="true"
+     closed="true" buttons="#dlg-buttons" modal="true" collapsible="false" closable="true">
+    <!--添加商品的form表单id id="sampleFM"-->
+    <form id="sampleFM" method="post" novalidate>
+        <div id="tt" class="easyui-tabs" style="width:80%;height:520px;">
+            <div title="基本信息" style="padding:20px;">
+                <table width="100%" style="min-width:800px;">
+                    <tr>
+                        <td style="width:60px; height:30px">品牌</td>
+                        <td style="padding:5px;width:250px;">
+                            <input name="brand" id="brand" class="easyui-textbox"
+                                   data-options="required:true,validType:'length[1,50]'"
+                                   style="width: 180px;text-align: left"/>
+                        </td>
+                        <td style="width:60px; height:30px">工厂型号</td>
+                        <td style="text-align: left;padding:5px;width:250px;">
+                            <input name="factoryNumber" id="factoryNumber"
+                                   data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                   style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td style="width:60px; ">品名</td>
+                        <td style="padding:5px;width:250px;">
+                            <input name="goodsName" id="goodsName"
+                                   data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                   style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                        </td>
+
+                        <!-- <td style="width:60px; ">公司SKU</td>
+                         <td style="padding:5px;width:250px;">
+                             <input name="companySku" id="companySku"
+                                    data-options="required:true,validType:'length[1,50]'" class="easyui-textbox"
+                                    style="text-align:left;width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>-->
+                        <!--<td style="width:60px;">单位</td>
+                        <td style="padding:5px;width:250px;">
+                           &lt;!&ndash; input框&ndash;&gt;
+                            <input name="Unit" id="Unit"
+                                   data-options="validType:'length[1,30]'" style="width: 180px;height: 30px;border: 1px solid #95B8E7;border-radius:5px;"/>
+                            &lt;!&ndash;多单位下拉框&ndash;&gt;
+                            <select name="manyUnit" id="manyUnit"
+                                    style="width:180px;
+                                    display: none;height: 30px;
+                                    border: 1px solid #95B8E7;
+                                    border-radius:5px;">
+                            </select>
+                            &lt;!&ndash;多单位选项框&ndash;&gt;
+                            <input id="manyUnitCheck" type="checkbox"/>多单位
+                        </td>
+                        <td style="width:250px"></td>-->
+                        <!-- <tr>
+                             <td style="width:60px;">ASIN</td>
+                             <td style="padding:5px;">
+                                 <input name="asin" id="asin" class="easyui-textbox"
+                                        data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                             </td>
+                             <td style="height:30px;">平台SKU</td>
+                             <td style="padding:5px">
+                                 <input name="platformSku" id="platformSku" class="easyui-textbox"
+                                        data-options="validType:'length[1,50]'"
+                                        style="text-align:left;width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                             </td>
+                             <td style="height:30px;">FNSKU</td>
+                             <td style="padding:5px">
+                                 <input name="fnsku" id="fnsku" class="easyui-textbox"
+                                        data-options="required:true,validType:'length[1,50]'"
+                                        style="text-align:left; width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                             </td>
+                               &lt;!&ndash; <td style="height:30px;">类别</td>
+                                <td style="padding:5px">
+                                    <input name="parentName" id="parentName" class="easyui-textbox" style="width: 180px;" readonly="readonly"/>
+                                   &lt;!&ndash; 添加商品信息类别的放大镜&ndash;&gt;
+                                    <a href="javascript:void(0)" class="l-btn l-btn-plain" group="" id="lookForMaterialCategory">
+                                        <span class="l-btn-left"><span class="l-btn-text icon-search l-btn-icon-left" style="height: 20px;">
+
+                                        </span>
+                                        </span>
+                                    </a>
+                                    <input name="parentId" id="parentId" type="hidden"/>
+                                </td>
+                                <td style="text-align: left;"></td>&ndash;&gt;
+                         </tr>-->
+
+                        <!--<td style="width:60px;">序列号</td>
+                        <td style="padding:5px;">
+                            <select name="EnableSerialNumber" id="EnableSerialNumber"
+                                    style="width:180px;height: 30px;border: 1px solid #95B8E7;border-radius:5px;">
+                                <option value="1">有</option>
+                                <option value="0">无</option>
+                            </select>
+                        </td>-->
+                        <!--  <td style="width:60px;">海关编码</td>
+                          <td style="padding:5px;">
+                              <input name="customsCode" id="customsCode" class="easyui-textbox"
+                                     data-options="validType:'length[1,50]'"
+                                     style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                          </td>
+                          <td style="height:10px;width: 100px">工厂成品库存</td>
+                          <td style="padding:5px;">
+                              <input name="factoryFinishedGoodsInventory" id="factoryFinishedGoodsInventory"
+                                     class="easyui-textbox"
+                                     data-options="validType:'length[1,50]'" style="text-align:left;width: 180px;"/>
+                          </td>
+
+                          <td style="height:10px;width: 100px">产品成本</td>
+                          <td style="padding:5px;">
+                              <input name="productCost" id="productCost" class="easyui-textbox"
+                                     data-options="validType:'length[1,50]'" style="text-align:left;width: 180px;"/>
+                          </td>
+
+                          </td>-->
+                        <td style="text-align:left;height:10px;width:60px; ">需求数量</td>
+                        <td style="text-align:left;padding:5px;width:250px;">
+                            <input name="demaQuan" id="demaQuan"
+                                   data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                   style="text-align:left;width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:60px; ">立项日期</td>
+                        <td style="padding:5px;width:250px;">
+                            <input type="text" name="statrData" id="statrData"
+                                   data-options="validType:'length[1,50]'" class="easyui-datebox width-140"
+                                   style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                        </td>
+                        <td style="text-align:left;width:60px; ">预计交付日期</td>
+                        <td style="text-align:left;padding:5px;width:250px;">
+                            <input type="text" name="endData" id="endData"
+                                   data-options="validType:'length[1,50]'" class="easyui-datebox width-140"
+                                   style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                        </td>
+                    </tr>
+                    <td style="text-align:left;width:60px; "></td>
+                    <td style="text-align:left;padding:5px;width:100px;"></td>
+                    <td style="text-align:left;width:60px; ">实际交付日期</td>
+                    <td style="text-align:left;padding:5px;width:250px;">
+                        <input type="text" name="sjendData" id="sjendData"
+                               data-options="validType:'length[1,50]'" class="easyui-datebox width-140"
+                               style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                    </td>
+                    <tr>
+
+                    </tr>
+                    <tr>
+                        <td style="width:60px; ">备注</td>
+                        <td style="padding:5px;width:250px;">
+                            <!--  <input name="remarks" id="remarks"
+                                     data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                     style="width: 180px;height: 60;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>-->
+                            <textarea name="remarks" id="remarks" class="easyui-textbox" data-options="multiline:true"
+                                      placeholder="暂无备注信息"
+                                      style="width: 230px; height:90px;"></textarea>
+                        </td>
+                        <td style="text-align:left;height:10px;width:60px; ">规格描述</td>
+                        <td style="text-align:left;padding:5px;width:250px;">
+                            <!--  <input name="specDesc" id="specDesc"
+                                     data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                     style="text-align:left;width: 180px;height: 60;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>-->
+                            <textarea name="specDesc" id="specDesc" class="easyui-textbox" data-options="multiline:true"
+                                      placeholder="暂无规格描述信息"
+                                      style="width: 230px; height:90px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:60px;">图片</td>
+                        <td style="padding: 5px">
+                            <a href="javascript:void(0)" class="easyui-linkbutton"
+                               iconCls="icon-redo" id="imageResetBtn">重置图片</a>
+                            <input id="chooseFile" name="file" style="width:180px;">
+                        </td>
+                        <td class="td-content" style="width: 130px;height: 200px;">
+                            <input type="hidden" value="" name="imges" id="pic">
+                            <div id="Imgdiv">
+                                <img id="Img" style="width: 160px;height: 160px"/>
+                            </div>
+                        <td>
+                    </tr>
+                    <!--
+                      <tr>
+                          <td>
+                              <div>
+                                  <input id="chooseFile" name="file" style="width:300px" data-options="required:true">
+                              </div>
+                          </td>
+                      </tr>-->
+                    <!-- <tr>
+                         <td colspan="7" style="padding:5px 20px 10px 0; width: 1200px">
+                             <table id="materialExtendData" style="width:1200px;border-bottom-color:#FFFFFF"></table>
+                         </td>
+                     </tr>-->
+                </table>
+            </div>
+            <!-- <div title="包装盒详细信息和外箱详细信息" style="padding:20px;">
+                 &lt;!&ndash;<table class="tb-other-info">
+                     <tr class="tr-kiloGram">
+                         <td style="width:80px;">包装盒重量/kg</td>
+                         <td style="padding:5px">
+                             <input name="kiloGram" id="kiloGram"
+                                    data-options="validType:'length[1,30]'" style="width: 150px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                         <td style="width:80px;">包装盒長度/m</td>
+                         <td style="padding:5px">
+                             <input name="aLong" id="aLong"
+                                    data-options="validType:'length[1,30]'" style="width: 150px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                     </tr>
+                    <tr class="tr-aLong">
+                         <td>包装盒長度/m</td>
+                         <td style="padding:5px">
+                             <input name="aLong" id="aLong"
+                                    data-options="validType:'length[1,30]'" style="width: 250px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                     </tr>
+                     <tr class="tr-otherField2">
+                         <td>自定义2</td>
+                         <td style="padding:5px">
+                             <input name="OtherField2" id="OtherField2"
+                                    data-options="validType:'length[1,30]'" style="width: 250px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                     </tr>
+                     <tr class="tr-otherField3">
+                         <td>自定义3</td>
+                         <td style="padding:5px">
+                             <input name="OtherField3" id="OtherField3"
+                                    data-options="validType:'length[1,30]'"
+                                    style="width: 250px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                     </tr>
+                 </table>&ndash;&gt;
+                 <table width="100%" style="min-width:1150px;">
+                     <tr>
+                         <td style="width:60px;">包裝盒重量/kg</td>
+                         <td style="width: 200px;padding:5px;">
+                             <input name="kilogram" id="kilogram" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'"
+                                    style="width: 180px;height: 30px;border: 1px solid #95B8E7;border-radius:5px;"/>
+                         </td>
+                         <td style="width:60px;">包装盒长度/m</td>
+                         <td style="padding:5px;width: 200px;">
+                             <input name="along" id="along" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'"
+                                    style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px;"/>
+                         </td>
+                         &lt;!&ndash;   <td style="width:60px;">单位</td>
+                            <td style="padding:5px;width:250px;">
+                               &lt;!&ndash; input框&ndash;&gt;
+                                <input name="Unit" id="Unit"
+                                       data-options="validType:'length[1,30]'" style="width: 180px;height: 30px;border: 1px solid #95B8E7;border-radius:5px;"/>
+                                &lt;!&ndash;多单位下拉框&ndash;&gt;
+                                <select name="manyUnit" id="manyUnit"
+                                        style="width:180px;
+                                        display: none;height: 30px;
+                                        border: 1px solid #95B8E7;
+                                        border-radius:5px;">
+                                </select>
+                                &lt;!&ndash;多单位选项框&ndash;&gt;
+                                <input id="manyUnitCheck" type="checkbox"/>多单位
+                            </td>
+                            <td style="width:250px"></td>&ndash;&gt;
+                     </tr>
+                     <tr>
+                         <td style="width:60px;">包装盒宽度/m</td>
+                         <td style="padding:5px;width:250px;">
+                             <input name="width" id="width"
+                                    data-options="validType:'length[1,50]'" class="easyui-textbox"
+                                    style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                         <td style="width:60px;">包装盒高度/m</td>
+                         <td style="padding:5px;">
+                             <input name="height" id="height" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                         </td>
+                            &lt;!&ndash;<td style="height:30px;">类别</td>
+                                   <td style="padding:5px">
+                                       <input name="parentName" id="parentName" class="easyui-textbox" style="width: 180px;" readonly="readonly"/>
+                                      &lt;!&ndash; 添加商品信息类别的放大镜&ndash;&gt;
+                                       <a href="javascript:void(0)" class="l-btn l-btn-plain" group="" id="lookForMaterialCategory">
+                                           <span class="l-btn-left"><span class="l-btn-text icon-search l-btn-icon-left" style="height: 20px;">
+
+                                           </span>
+                                           </span>
+                                       </a>
+                                       <input name="parentId" id="parentId" type="hidden"/>
+                                   </td>
+                                   <td style="text-align: left;"></td>&ndash;&gt;
+                     </tr>
+                     <tr>
+                         <td style="height:30px;">内盒体积/㎡</td>
+                         <td style="padding:5px">
+                             <input name="innerBoxArea" id="innerBoxArea" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'"
+                                    style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                         <td style="height:30px;">内盒产品数量(pcs)</td>
+                         <td style="padding:5px">
+                             <input name="nhQuantity" id="nhQuantity" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'"
+                                    style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                     </tr>
+                     <tr>
+                         &lt;!&ndash;  <td style="width:60px;">序列号</td>
+                            <td style="padding:5px;">
+                                <select name="EnableSerialNumber" id="EnableSerialNumber"
+                                        style="width:180px;height: 30px;border: 1px solid #95B8E7;border-radius:5px;">
+                                    <option value="1">有</option>
+                                    <option value="0">无</option>
+                                </select>
+                            </td>&ndash;&gt;
+                         <td style="width:60px;">箱容pcs/箱</td>
+                         <td style="padding:5px;">
+                             <input name="wxQuantity" id="wxQuantity" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'"
+                                    style="width: 180px;border: 1px solid #95B8E7;border-radius:5px;height: 30px"/>
+                         </td>
+                         <td style="height:10px;width: 50px">箱长/m</td>
+                         <td style="padding:5px">
+                             <input name="boxLong" id="boxLong" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                         </td>
+                         &lt;!&ndash; <td style="height:30px;"></td>
+                           <td style="padding:5px"></td>
+                           <td style="text-align: left;">
+                           </td>;&ndash;&gt;
+                     </tr>
+                     <tr>
+                         <td style="height:10px;width: 50px">箱宽/m</td>
+                         <td style="padding:5px">
+                             <input name="boxWidth" id="boxWidth" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                         </td>
+                         <td style="height:10px;width: 50px">箱高/m</td>
+                         <td style="padding:5px">
+                             <input name="boxHeight" id="boxHeight" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                         </td>
+                     </tr>
+                     <tr>
+                         <td style="height:10px;width: 50px">箱重Kg/箱</td>
+                         <td style="padding:5px">
+                             <input name="boxHeavy" id="boxHeavy" class="easyui-textbox"
+                                    data-options="validType:'length[1,50]'" style="width: 180px;"/>
+                         </td>
+                     </tr>
+                     <tr>
+                         <td style="height:30px;text-align: right">备注</td>
+                         <td style="padding:5px 20px 5px 5px" colspan="6">
+                             <textarea name="remark" id="remark" class="easyui-textbox" data-options="multiline:true"
+                                       placeholder="暂无备注信息"
+                                       style="width: 500px; height:150px;"></textarea>
+                         </td>
+                     </tr>
+                     &lt;!&ndash; <tr>
+                          <td colspan="7" style="padding:5px 20px 10px 0; width: 1200px">
+                              <table id="materialExtendData" style="width:1200px;border-bottom-color:#FFFFFF"></table>
+                          </td>
+                      </tr>&ndash;&gt;
+                     &lt;!&ndash; <tr>
+                          <td style="height:30px;">备注</td>
+                          <td style="padding:5px 20px 5px 5px" colspan="6">
+                              <textarea name="Remark" id="Remark" class="easyui-textbox" data-options="multiline:true" placeholder="暂无备注信息"
+                                        style="width: 1130px; height:40px;"></textarea>
+                          </td>
+                      </tr>&ndash;&gt;
+                 </table>
+             </div>-->
+            <!--  <div title="初始库存" style="padding:20px;">
+                  <div id="initDepot"></div>
+
+              </div>-->
+        </div>
+    </form>
+</div>
+<!--关闭添加商品的按钮-->
+<div id="dlg-buttons">
+    <a href="javascript:void(0)" id="saveSample" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+    <a href="javascript:void(0)" id="cancelSample" class="easyui-linkbutton" iconCls="icon-cancel"
+       onclick="javascript:closematerialDlg()">取消</a>
+</div>
+
+<!-- 导入excel表格弹出的框框 -->
+<div id="importExcelDlg" class="easyui-dialog" style="width:450px; padding:10px 20px;"
+     closed="true" buttons="#dlg-buttons5" modal="true" collapsible="false" closable="true">
+
+    <form id="importExcelFM" method="post" enctype="multipart/form-data" action="/sample/importExcel">
+        <table>
+            <tr>
+                <td style="width:80px;">表格模板</td>
+                <td style="padding:5px">
+                    <span><a href="/pages/template/goods_template.xls"><b>Excel样品模板下载</b></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td>文件名称</td>
+                <td style="padding:5px">
+                    <input name="sampleFile" id="sampleFile" type="file" style="width: 230px;"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!--导入保存取消按钮-->
+<div id="dlg-buttons5">
+    <a href="javascript:void(0)" id="saveimport" class="easyui-linkbutton" iconCls="icon-ok">导入</a>
+    <a href="javascript:void(0)" id="cancelimport" class="easyui-linkbutton" iconCls="icon-cancel"
+       onclick="javascript:$('#importExcelDlg').dialog('close')">取消</a>
+</div>
+<!--点击类别放大镜要弹出的窗口-->
+<div id="forSelectMaterialCategoryDlg" class="easyui-dialog" style="width:380px;padding:10px 20px;top:50px;"
+     closed="true" modal="true" cache="false" collapsible="false" closable="true">
+</div>
+<div id="picdialog" class="easyui-window" closed="true"
+     closable="true" title="产品图片"
+     collapsible="false" maximizable="false" minimizable="false">
+    <img id="imgid"/>
+</div>
+<!--自定义选项 -->
+<div id="show_column_window">
+    <div id="show_column_datalist"></div>
+    <div id="show_columns_buttons">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="chooseAllColumns();">全选</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="unChooseAllColumns();">全不选</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="saveChooseColumns();">确定</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" onclick="closeShowCloumns();">关闭</a>
+    </div>
+</div>
+<div id="show_column_excel_window">
+    <div id="show_column_excel_datalist"></div>
+    <div id="show_columns_excel_buttons2">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="chooseAllColumns();">全选</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="unChooseAllColumns();">全不选</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true"
+           onclick="saveChooseExcelColumns();">确定</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true" onclick="closeShowCloumns();">关闭</a>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+    $('#imageResetBtn').unbind().bind({
+        click: function () {
+            $('#chooseFile').filebox('reset');
+            $('#chooseFile').filebox('disableValidation');
+            $('#Img').attr('src', '');
+        }
+    });
+
+    $('#chooseFile').filebox({
+        buttonText: '选择图片',
+        buttonAlign: 'left',
+        accept: "image/gif,image/bmp,image/jpeg,image/jpg,image/png",
+        onChange: function (e) {
+            change_photo()
+        }
+    })
+
+    function change_photo() {
+        PreviewImage($("input[name='file']")[0], 'Img', 'Imgdiv');//传入绑定的文本框，图片、图片div
+    }
+
+    //焦点图片预览
+    function PreviewImage(fileObj, imgPreviewId, divPreviewId) {
+        var allowExtention = ".jpg,.bmp,.gif,.jpeg,.png";//允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;
+        var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+        if (allowExtention.indexOf(extention) > -1) {
+            if (fileObj.files) {//HTML5实现预览，兼容chrome、火狐7+等
+                if (window.FileReader) {
+                    var reader = new FileReader();
+                    //图片读取完成后触发该方法
+                    reader.onload = function (e) {
+
+                        var tempDivPreview = document.getElementById(divPreviewId);
+                        tempDivPreview.style.display = "block";
+                        document.getElementById(imgPreviewId).setAttribute("src", e.target.result);
+                    }
+                    if (fileObj.files[0]) {
+                        reader.readAsDataURL(fileObj.files[0]);
+                    }
+                    changeImg();
+                }
+            } else {
+                document.getElementById(imgPreviewId).setAttribute("src", fileObj.value);
+            }
+        } else {
+            alert("仅支持" + allowExtention + "为后缀名的文件!");
+            fileObj.value = "";//清空选中文件
+            fileObj.outerHTML = fileObj.outerHTML;
+        }
+    }
+
+    /*上傳圖片到服務器，然後給隱藏於賦值，便於插入*/
+    function changeImg() {
+
+        if ($('#chooseFile').filebox('getValue') == "") {
+            return;
+        }
+        $.ajaxFileUpload({
+            url: '/upload/uploadFile',
+            dataType: 'json',
+            type: 'post',
+            secureuri: false,
+            fileElementId: 'filebox_file_id_1', // 单张图片，固定写法
+            success: function (data) {
+                $('#pic').attr("value", data.msg); // 提交的数据赋值
+            }
+        });
+    }
+
+    /*    var editIndex = undefined;
+       //var materialCategoryList = null;
+       var types = "";
+       var multiple = 0;  //倍数
+       //添加扩展属性
+      var mPropertyList = null; //商品属性列表
+       var mPropertyListShort = ""; //商品属性列表-传值
+      // var thisBarCode = getMaxBarCode(); //获取当前最大条码*/
+    //初始化界面
+    var clickType = ""; //记录从哪里点击的类别弹窗
+    $(function () {
+        /*  //初始化添加扩展信息属性/materialProperty/list
+          /!*initMProperty();*!/
+          //初始化多单位
+          /!*manyUnitFun();*!/
+          //根據商品名稱模糊查詢/material/getMaterialNameList*/
+        initSampleNameList();
+        initSampleBrandList();
+        /*  //往mPropertyListShort里面传了扩展属性的值/materialProperty/list"
+          /!*initMPropertyShort(); *!///初始化商品属性
+          //初始化數據網格 "/material/list",*/
+        /* initColums();*/
+        initTableData();
+        ininPager();
+        //防止表單重複
+        initForm();
+        /*  //"/unit/list",單位查詢
+            /*bindEvent();*/
+
+    });
+
+    //初始化系统基础信息
+    /*  function initMProperty() {
+          $.ajax({
+              type: "get",
+                     //请求扩展属性列表
+              url: "/materialProperty/list",
+              dataType: "json",
+              data: ({
+                  //参数
+                  currentPage: 1,
+                  pageSize: 100
+              }),
+              success: function (res) {
+                  //返回200
+                  if(res && res.code === 200){
+                      //data和page存在
+                      if(res.data && res.data.page) {
+                          //返回的属性列表放进mPropertyList
+                          mPropertyList = res.data.page.rows; //属性列表
+                      }
+                  }
+              },
+              //此处添加错误处理
+              error: function () {
+                  $.messager.alert('查询提示', '查询信息异常，请稍后再试！', 'error');
+                  return;
+              }
+          });
+      }*/
+
+    function initMCData(parentid_search) {
+        $.ajax({
+            type: "get",
+            url: "/materialCategory/getAllList",
+            data: ({
+                parentId: parentid_search
+            }),
+            //设置为同步
+            async: false,
+            dataType: "json",
+            success: function (res) {
+                if (res && res.code === 200) {
+                    materialCategoryList = res.data;
+                    if (materialCategoryList != null) {
+                        options = "";
+                        for (var i = 0; i < materialCategoryList.length; i++) {
+                            var materialCategory = materialCategoryList[i];
+                            types += materialCategory.id + ',';
+                        }
+                        types += parentid_search;
+                    } else {
+                        types = parentid_search;
+                    }
+                } else {
+                    $.messager.alert('提示', '查找系统基础信息异常,请与管理员联系！', 'error');
+                    return;
+                }
+            }
+        });
+    }
+
+    //防止表单提交重复
+    function initForm() {
+        $('#sampleFM').form({
+            onSubmit: function () {
+                return false;
+            }
+        });
+    }
+
+    //多单位勾选
+    /*function manyUnitFun() {
+        $("#manyUnitCheck").off("click").on("click", function () {
+            //多单位选项框如果是选中状态
+            if ($(this).prop("checked") == true) {
+                //input框隐藏
+                $("#Unit").hide();
+                //选项框展示
+                $("#manyUnit").show();
+                //清空input框里面的数据
+                $("#Unit").val(""); //清除单位的填写内容
+            }
+            else {
+                //多单位选项框如果是不是选中状态
+                //input框展示
+                $("#Unit").show();
+                //选项框展示
+                $("#manyUnit").hide();
+                //清空选项框
+                $("#manyUnit").val(""); //清除多单位的下拉框
+            }
+        });
+    }*/
+
+    //初始化商品名称模糊匹配
+    function initSampleNameList() {
+        $('#searchName').combobox({
+            method: "get",
+            url: "/sample/getSampleNameList",
+            valueField: 'value',
+            textField: 'text',
+            hasDownArrow: false,
+            //q表示用户输入的值，row代表数据列表
+            filter: function (q, row) {
+                //获取数据列表
+                var opts = $(this).combobox('options');
+                //如果数据列表有包含用户输入的数据则显示数据
+                return row[opts.textField].indexOf(q) != -1;
+            }
+        });
+    }
+
+    function initSampleBrandList() {
+        $('#searchBrand').combobox({
+            method: "get",
+            url: "/sample/getSampleBrandList",
+            valueField: 'value',
+            textField: 'text',
+            hasDownArrow: false,
+            //q表示用户输入的值，row代表数据列表
+            filter: function (q, row) {
+                //获取数据列表
+                var opts = $(this).combobox('options');
+                //如果数据列表有包含用户输入的数据则显示数据
+                return row[opts.textField].indexOf(q) != -1;
+            }
+        });
+    }
+
+
+    //初始化商品属性
+    /* function initMPropertyShort() {
+         $.ajax({
+             type: "get",
+             url: "/materialProperty/list",
+             dataType: "json",
+             async: false,
+             data: ({
+                 currentPage: 1,
+                 pageSize: 100
+             }),
+             success: function (res) {
+                 if(res && res.code === 200){
+                     if(res.data && res.data.page) {
+                         var thisRows = res.data.page.rows; //属性列表
+                         for (var i = 0; i < thisRows.length; i++) {
+                             if (thisRows[i].enabled) {
+                                 mPropertyListShort += thisRows[i].nativeName + ",";
+                             }
+                         }
+                         if (mPropertyListShort) {
+                             //把最后一个逗号切掉！！
+                             mPropertyListShort = mPropertyListShort.substring(0, mPropertyListShort.length - 1);
+                         }
+                     }
+                 }
+             },
+             //此处添加错误处理
+             error: function () {
+                 $.messager.alert('查询提示', '查询信息异常，请稍后再试！', 'error');
+                 return;
+             }
+         });
+     }
+*/
+    //初始化表格数据
+    function initTableData() {
+        //改变宽度和高度
+        $("#searchPanel").panel({width: webW});
+        $("#tablePanel").panel({width: webW});
+        $('#tableData').datagrid({
+            height: heightInfo,
+            nowrap: false,
+            rownumbers: false,
+            //动画效果
+            animate: false,
+            //选中单行
+            singleSelect: false,
+            collapsible: false,
+            selectOnCheck: false,
+            pagination: true,
+            //交替出现背景
+            striped: false,
+            pageSize: initPageSize,
+            pageList: initPageNum,
+            columns: [[
+                {field: 'id', width: 35, align: "center", checkbox: true, height: 50},
+                {
+                    title: '操作', field: 'op', align: "center", width: 80, height: 50,
+                    formatter: function (value, rec, index) {
+                        var str = '';
+                        str += '<img title="编辑" src="/js/easyui/themes/icons/pencil.png" style="cursor: pointer;" onclick="editMaterial(\'' + index + '\');"/>' + 'Y--Y';
+                        if (isShowOpFun()) {
+                            str += '<img title="删除" src="/js/easyui/themes/icons/edit_remove.png" style="cursor: pointer;" onclick="deleteMaterial(' + rec.id + ');"/>';
+                        }
+                        return str;
+                    }
+                },
+                {title: '品牌', field: 'brand', width: 100, align: "center"},
+                {title: '工厂型号', field: 'factoryNumber', width: 60, align: "center"},
+                {title: '品名', field: 'goodsName', width: 100, align: "center"},
+                {
+                    title: '图片', field: 'imges', width: 60, height: 50, align: "center",
+                    //格式化并返回img标签
+                    formatter: function (value, row, index) {
+                        //return "<img style='width:72px;height:72px;' border='1' src='" + value + "'/>";
+                        return "<img style='width:50px;height:50px;' src='" + value + "' onmouseover='bigImg(this," + index + ")' onmouseout='closeImg()'/>";
+                    }
+                },
+                {title: '规格描述', field: 'specDesc', width: 200, align: "left", halign: "center"},
+                {title: '需求数量', field: 'demaQuan', width: 50, align: "center"},
+                {title: '立项日期', field: 'statrData', width: 100, align: "center"},
+                {title: '预计交付日期', field: 'endData', width: 100, align: "center"},
+                {title: '实际交付日期', field: 'sjendData', width: 100, align: "center"},
+                {title: '备注', field: 'remarks', width: 100, align: "left", halign: "center"},
+                {
+                    title: '状态', field: 'state', width: 100, align: "center",
+                    formatter: function (value, rec, index) {
+                        return value == 0 ? "<span onclick='follYes(" + index + ")'><a style='color:#9f191f;font-weight: bolder'>未完成</a></span>" : "<span  onclick='follYes(" + index + ")'><a style='color: #00b83f;font-weight: bolder'>已完成</a></span>"
+                    }
+                }
+            ]],
+            toolbar: [
+                {
+                    id: 'addMaterial',
+                    text: '增加',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        addMaterial();
+                    }
+                },
+                '-',
+                {
+                    id: 'deleteMaterial',
+                    text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        batDeleteMaterial();
+                    }
+                },
+                '-',
+                /*  {
+                      id: 'setEnable',
+                      text: '启用',
+                      iconCls: 'icon-ok',
+                      handler: function () {
+                          setEnableFun();
+                      }
+                  },
+                  '-',
+                  {
+                      id: 'setDisEnable',
+                      text: '禁用',
+                      iconCls: 'icon-no',
+                      handler: function () {
+                          setDisEnableFun();
+                      }
+                  },
+                  '-',*/
+                {
+                    id: 'setInput',
+                    text: '导入',
+                    iconCls: 'icon-excel',
+                    handler: function () {
+                        setInputFun();
+                    }
+                },
+                '-',
+                {
+                    id: 'setOutput',
+                    text: '导出',
+                    iconCls: 'icon-excel',
+                    handler: function () {
+                        setOutputFun();
+                    }
+                }
+                /* ,
+                 '-',
+                 {
+                     id: 'custom',
+                     text: '自定义设置',
+                     iconCls: 'icon-filter',
+                     handler: function () {
+                         chooseColumShow();
+                     }
+                 },
+                 '-',
+                 {
+                     id: 'custom',
+                     text: '自定义Excel模板',
+                     iconCls: 'icon-filter',
+                     handler: function () {
+                         chooseExcel();
+                     }
+                 }*/
+
+            ],
+            onLoadError: function () {
+                $.messager.alert('页面加载提示', '页面加载异常，请稍后再试！', 'error');
+                return;
+            }
+        });
+        dgResizes();
+        toolbarStatus();
+        showMaterialDetails(1, initPageSize);
+    }
+
+    function dgResizes() {
+        var searchTabHeight = $('.box-body').height();
+        if ($('#tableData') && $('#tableData').length && $('#tableData').datagrid()) {
+            $('#tableData').datagrid('resize', {
+                width: $(window).width() - 13,
+                height: $(window).height() - searchTabHeight - 51
+            });
+
+        }
+    }
+
+    $(window).resize(function () {
+        dgResizes()
+        initTableData()
+        ininPager()
+    });
+    //初始化表格数据
+    /* function initMaterialDetailData(mId) {
+         $('#materialTableData').datagrid({
+             height: 435,
+             nowrap: false,
+             rownumbers: false,
+             //动画效果
+             animate: false,
+             //选中单行
+             singleSelect: true,
+             collapsible: false,
+             selectOnCheck: false,
+             //单击行是否选中
+             checkOnSelect: false,
+             //交替出现背景
+             striped: true,
+             pagination: true,
+             pageSize: initPageSize,
+             pageList: initPageNum,
+             columns: [[
+                 {
+                     title: '单据编号', field: 'Number', width: 150,
+                     formatter: function (value, row) {
+                         return '<a class="n-link" onclick="turnBillDetailPage(\'' + row.Number + '\''+',\'' + row.Type + '\');">' + row.Number + '</a>';
+                     }
+                 },
+                 {title: '类型', field: 'Type', width: 100},
+                 {title: '数量', field: 'BasicNumber', width: 80},
+                 {title: '日期', field: 'OperTime', width: 180, formatter: function (value) {
+                         return formatTime(value, 'Y-M-D h:m:s');
+                 }}
+             ]],
+             onLoadError: function () {
+                 $.messager.alert('页面加载提示', '页面加载异常，请稍后再试！', 'error');
+                 return;
+             }
+         });
+     }*/
+
+    //分页信息处理
+    /*function ininMaterialDetailPager(mId) {
+        try {
+            var opts = $("#materialTableData").datagrid('options');
+            var pager = $("#materialTableData").datagrid('getPager');
+            pager.pagination({
+                onSelectPage: function (pageNum, pageSize) {
+                    opts.pageNumber = pageNum;
+                    opts.pageSize = pageSize;
+                    pager.pagination('refresh', {
+                        pageNumber: pageNum,
+                        pageSize: pageSize
+                    });
+                    getMaterialInOutList(mId, pageNum, pageSize);
+                }
+            });
+        }
+        catch (e) {
+            $.messager.alert('异常处理提示', "分页信息异常 :  " + e.name + ": " + e.message, 'error');
+        }
+    }*/
+
+    /*function getMaterialInOutList(mId, pageNo, pageSize) {
+        $.ajax({
+            type: "get",
+            url: "/depotItem/findDetailByTypeAndMaterialId",
+            dataType: "json",
+            data: ({
+                materialId: mId,
+                currentPage: pageNo,
+                pageSize: pageSize
+            }),
+            success: function (res) {
+                if(res && res.code === 200){
+                    if(res.data && res.data.page) {
+                        $("#materialTableData").datagrid('loadData', res.data.page);
+                    }
+                }
+            },
+            //此处添加错误处理
+            error: function () {
+                $.messager.alert('查询提示', '查询数据后台异常，请稍后再试！', 'error');
+                return;
+            }
+        });
+    }*/
+
+    //初始化键盘enter事件
+    $(document).keydown(function (event) {
+        //兼容 IE和firefox 事件
+        var e = window.event || event;
+        var k = e.keyCode || e.which || e.charCode;
+        //兼容 IE,firefox 兼容
+        var obj = e.srcElement ? e.srcElement : e.target;
+        //绑定键盘事件为 id是指定的输入框才可以触发键盘事件 13键盘事件 ---遗留问题 enter键效验 对话框会关闭问题
+        if (k == "13" && (obj.id == "CategoryLevel" || obj.id == "searchName")) {
+            $("#saveSample").click();
+        }
+        //搜索按钮添加快捷键
+        if (k == "13" && (obj.id == "searchCategoryId" || (obj.id == "searchName"))) {
+            $("#searchBtn").click();
+
+        }
+    });
+    var UserpageNum = 1;
+
+    //分页信息处理
+    function ininPager() {
+        try {
+            var opts = $("#tableData").datagrid('options');
+            var pager = $("#tableData").datagrid('getPager');
+            $(pager).pagination({
+                onSelectPage: function (pageNum, pageSize) {
+                    opts.pageNumber = pageNum;
+                    opts.pageSize = pageSize;
+                    $(pager).pagination('refresh', {
+                        pageNumber: pageNum,
+                        pageSize: pageSize
+                    });
+                    UserpageNum = pageNum;
+                    showMaterialDetails(pageNum, pageSize);
+                }
+            });
+        } catch (e) {
+            $.messager.alert('异常处理提示', "分页信息异常 :  " + e.name + ": " + e.message, 'error');
+        }
+    }
+
+    /*function findStockList(mId) {
+        $('#materialDetailListDlg').dialog('open').dialog('setTitle', '<img src="/js/easyui/themes/icons/pencil.png"/>&nbsp;查看出入库明细');
+        $(".window-mask").css({width: webW, height: webH});
+        initMaterialDetailData(mId);
+        getMaterialInOutList(mId, 1, initPageSize);
+        ininMaterialDetailPager(mId);
+    }*/
+
+    //删除商品信息
+    function deleteMaterial(materialID) {
+        $.messager.confirm('删除确认', '确定要删除此商品信息吗？', function (r) {
+            if (r) {
+                $.ajax({
+                    type: "post",
+                    url: "/sample/batchDeleteMaterialByIds",
+                    dataType: "json",
+                    data: ({
+                        ids: materialID
+                    }),
+                    success: function (res) {
+                        if (res && res.code == 200) {
+                            // $("#searchBtn").click();
+                            DeletedRefresh()
+
+                        } else {
+                            if (res && res.code == 601) {
+                                var jsondata = {};
+                                jsondata.ids = materialID;
+                                jsondata.deleteType = '2';
+                                var type = 'single';
+                                batDeleteMaterialForceConfirm(res, "/material/batchDeleteMaterialByIds", jsondata, type);
+                            } else if (res && res.code == 600) {
+                                $.messager.alert('删除提示', res.msg, 'error');
+                            } else {
+                                $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                            }
+                        }
+                    },
+                    //此处添加错误处理
+                    error: function () {
+                        $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                        return;
+                    }
+                });
+            }
+        });
+    }
+
+    //批量删除商品
+
+    function batDeleteMaterial() {
+        var row = $('#tableData').datagrid('getChecked');
+        if (row.length == 0) {
+            $.messager.alert('删除提示', '没有记录被选中！', 'info');
+            return;
+        }
+        if (row.length > 0) {
+            $.messager.confirm('删除确认', '确定要删除选中的' + row.length + '条商品信息吗？', function (r) {
+                var ids = "";
+                if (r) {
+                    for (var i = 0; i < row.length; i++) {
+                        if (i == row.length - 1) {
+                            ids += row[i].id;
+                            break;
+                        }
+                        //alert(row[i].id);
+                        ids += row[i].id + ",";
+                    }
+                    $.ajax({
+                        type: "post",
+                        url: "/sample/batchDeleteMaterialByIds",
+                        dataType: "json",
+                        async: false,
+                        data: ({
+                            ids: ids
+                        }),
+                        success: function (res) {
+                            if (res && res.code === 200) {
+                                //$("#searchBtn").click();
+                                DeletedRefresh()
+                                $(":checkbox").attr("checked", false);
+                            } else {
+                                if (res && res.code == 601) {
+                                    var jsondata = {};
+                                    jsondata.ids = ids;
+                                    jsondata.deleteType = '2';
+                                    var type = 'batch';
+                                    batDeleteMaterialForceConfirm(res, "/material/batchDeleteMaterialByIds", jsondata, type);
+                                } else if (res && res.code == 600) {
+                                    $.messager.alert('删除提示', res.msg, 'error');
+                                } else {
+                                    $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                                }
+                            }
+                        },
+                        //此处添加错误处理
+                        error: function () {
+                            $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                            return;
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    /**
+     * 确认强制删除
+     * */
+    function batDeleteMaterialForceConfirm(res, url, jsondata, type) {
+        $.messager.confirm('删除确认', res.msg, function (r) {
+            if (r) {
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    dataType: "json",
+                    data: (jsondata),
+                    success: function (res) {
+                        if (res && res.code == 200) {
+                            $("#searchBtn").click();
+                            if (type == 'batch') {
+                                $(":checkbox").attr("checked", false);
+                            }
+                        } else if (res && res.code == 600) {
+                            $.messager.alert('删除提示', res.msg, 'error');
+                        } else {
+                            $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                        }
+                    },
+                    //此处添加错误处理
+                    error: function () {
+                        $.messager.alert('删除提示', '删除商品信息异常，请稍后再试！', 'error');
+                        return;
+                    }
+                });
+            }
+        });
+    }
+
+    //批量启用
+    /* function setEnableFun() {
+         var row = $('#tableData').datagrid('getChecked');
+         if (row.length == 0) {
+             $.messager.alert('启用提示', '没有记录被选中！', 'info');
+             return;
+         }
+         if (row.length > 0) {
+             $.messager.confirm('启用确认', '确定要启用选中的' + row.length + '条信息吗？', function (r) {
+                 if (r) {
+                     var ids = "";
+                     for (var i = 0; i < row.length; i++) {
+                         if (i == row.length - 1) {
+                             ids += row[i].id;
+                             break;
+                         }
+                         ids += row[i].id + ",";
+                     }
+                     $.ajax({
+                         type: "post",
+                         url: "/material/batchSetEnable",
+                         dataType: "json",
+                         async: false,
+                         data: ({
+                             enabled: true,
+                             materialIDs: ids
+                         }),
+                         success: function (res) {
+                             if(res && res.code === 200) {
+                                 $("#searchBtn").click();
+                                 $(":checkbox").attr("checked", false);
+                             } else {
+                                 $.messager.alert('启用提示', '启用信息失败，请稍后再试！', 'error');
+                             }
+                         },
+                         //此处添加错误处理
+                         error: function () {
+                             $.messager.alert('启用提示', '启用信息异常，请稍后再试！', 'error');
+                             return;
+                         }
+                     });
+                 }
+             });
+         }
+     }*/
+
+    //批量禁用
+    /*function setDisEnableFun() {
+        var row = $('#tableData').datagrid('getChecked');
+        if (row.length == 0) {
+            $.messager.alert('禁用提示', '没有记录被选中！', 'info');
+            return;
+        }
+        if (row.length > 0) {
+            $.messager.confirm('禁用确认', '确定要禁用选中的' + row.length + '条信息吗？', function (r) {
+                if (r) {
+                    var ids = "";
+                    for (var i = 0; i < row.length; i++) {
+                        if (i == row.length - 1) {
+                            ids += row[i].id;
+                            break;
+                        }
+                        ids += row[i].id + ",";
+                    }
+                    $.ajax({
+                        type: "post",
+                        url: "/material/batchSetEnable",
+                        dataType: "json",
+                        async: false,
+                        data: ({
+                            enabled: false,
+                            materialIDs: ids
+                        }),
+                        success: function (res) {
+                            if(res && res.code === 200) {
+                                $("#searchBtn").click();
+                                $(":checkbox").attr("checked", false);
+                            } else {
+                                $.messager.alert('禁用提示', '禁用信息失败，请稍后再试！', 'error');
+                            }
+                        },
+                        //此处添加错误处理
+                        error: function () {
+                            $.messager.alert('禁用提示', '禁用信息异常，请稍后再试！', 'error');
+                            return;
+                        }
+                    });
+                }
+            });
+        }
+    }*/
+
+    //导入数据
+    function setInputFun() {
+        //IE下不允许编辑 input=file的值  解决思路：重新克隆input=file，把这个input元素复制一个，然后将原来的删除。
+        //在IE下复制元素的时候，其中的值是不会被复制的，所以就达到了清空文件域的目的了。
+        //而在Firefox下，其中的值也会被一同复制，清空一下就做到兼容
+        var fileUploadInput = $("#sampleFile");
+        fileUploadInput.after(fileUploadInput.clone().val(""));
+        fileUploadInput.remove();
+        $("#isCheck").val(1);
+        $('#importExcelDlg').dialog('open').dialog('setTitle', '导入商品信息');
+        $(".window-mask").css({width: webW - 20, height: webH});
+        $("#sampleFile").focus();
+    }
+
+    //导出数据
+    function setOutputFun() {
+        var ids = "";
+        var name = $.trim($("#searchName").combobox("getValue"));
+        var row = $('#tableData').datagrid('getChecked');
+        var cfs = $('#tableData').datagrid("getColumnFields");
+        requesTitle = new Array();
+        for (i = 2; i < cfs.length; i++) {
+            var col = $('#tableData').datagrid("getColumnOption", cfs[i]);
+            requesTitle.push(col.title)
+        }
+        if (row.length == 0) {
+            $.messager.confirm('导出提示', '没有选中记录,默认导出全部!', function (r) {
+                if (r) {
+                    window.location.href = "/sample/exportExcel?browserType=" + getOs()
+                        + "&name=" + name + "&requesTitle=" + requesTitle + "&ids=" + ids;
+                }
+            });
+        }
+        if (row.length > 0) {
+            $.messager.confirm('导出提示', '共选中导出' + row.length + "商品信息", function (r) {
+                if (r) {
+                    for (var i = 0; i < row.length; i++) {
+                        if (i == row.length - 1) {
+                            ids += row[i].id;
+                            break;
+                        }
+                        ids += row[i].id + ",";
+                    }
+
+                    window.location.href = "/sample/exportExcel?browserType=" + getOs()
+                        + "&name=" + name + "&requesTitle=" + requesTitle + "&ids=" + ids;
+                }
+            });
+        }
+    }
+
+
+    //增加
+    var url;
+    var materialID = 0;
+    //保存编辑前的名称/型号/颜色
+    var oldName = "";
+    /* var oldCompanySku = "";
+     var oldFnSku = "";*/
+    /*var oldModel = "";
+    var oldColor = "";
+    var oldUnit = "";
+    var oldManyUnit = "";*/
+
+    //根据商品属性架子啊
+    /*function bindMProperty() {
+        var trMfrs = $(".tr-mfrs").html();
+        trMfrs = '<tr class="tr-mfrs">' + trMfrs + '</tr>';
+        var trOtherField1 = $(".tr-otherField1").html();
+        trOtherField1 = '<tr class="tr-otherField1">' + trOtherField1 + '</tr>';
+        var trOtherField2 = $(".tr-otherField2").html();
+        trOtherField2 = '<tr class="tr-otherField2">' + trOtherField2 + '</tr>';
+        var trOtherField3 = $(".tr-otherField3").html();
+        trOtherField3 = '<tr class="tr-otherField3">' + trOtherField3 + '</tr>';
+        //表格模板变更
+        $(".tb-other-info").html("");
+        for (var i = 0; i < mPropertyList.length; i++) {
+            if (mPropertyList[i].nativeName === "制造商") {
+                $(".tb-other-info").append(trMfrs);
+                $(".tr-mfrs td").first().text(mPropertyList[i].anotherName);
+                if (mPropertyList[i].enabled) {
+                    $(".tr-mfrs").show();
+                }
+                else {
+                    $(".tr-mfrs").hide();
+                }
+            }
+            if (mPropertyList[i].nativeName === "自定义1") {
+                $(".tb-other-info").append(trOtherField1);
+                $(".tr-otherField1 td").first().text(mPropertyList[i].anotherName);
+                if (mPropertyList[i].enabled) {
+                    $(".tr-otherField1").show();
+                }
+                else {
+                    $(".tr-otherField1").hide();
+                }
+            }
+            if (mPropertyList[i].nativeName === "自定义2") {
+                $(".tb-other-info").append(trOtherField2);
+                $(".tr-otherField2 td").first().text(mPropertyList[i].anotherName);
+                if (mPropertyList[i].enabled) {
+                    $(".tr-otherField2").show();
+                }
+                else {
+                    $(".tr-otherField2").hide();
+                }
+            }
+            if (mPropertyList[i].nativeName === "自定义3") {
+                $(".tb-other-info").append(trOtherField3);
+                $(".tr-otherField3 td").first().text(mPropertyList[i].anotherName);
+                if (mPropertyList[i].enabled) {
+                    $(".tr-otherField3").show();
+                }
+                else {
+                    $(".tr-otherField3").hide();
+                }
+            }
+        }
+    }*/
+    /*添加商品的方法 */
+    function addMaterial() {
+        $("#sampleFM").form('clear');
+        $('#Img').attr('src', '');
+        if (checkPower()) {
+            return;
+        }
+        /* initTableDataExtend('add','0');
+         bindMProperty(); //根据商品属性绑定
+         $("#EnableSerialNumber").val('0');*/
+        $('#sampleDlg').dialog('open').dialog('setTitle', '<img src="/js/easyui/themes/icons/edit_add.png"/>&nbsp;增加样品信息');
+        $(".window-mask").css({width: webW, height: webH});
+        /*  $("#manyUnitCheck").prop("checked", false);
+          $("#manyUnit").val(""); //置空
+          //当前为不选中状态
+          $("#Unit").show();
+          $("#manyUnit").hide();*/
+        //选中基本资料tab
+        $("#sampleFM #tt .tabs").first().click();
+        /*      /!*oldName = "";*!/
+            /!*  oldModel = "";
+              oldColor = "";
+              oldStandard = "";
+              oldMfrs = "";
+              oldOtherField1 = "";
+              oldOtherField2 = "";
+              oldOtherField3 = "";
+              oldUnit = "";
+              oldManyUnit = "";*!/
+              //materialID = 0;*/
+        url = '/sample/add';
+        /*  initDepotList(materialID); *///加载仓库列表页面
+    }
+
+    //商品价格扩展
+    /* function initTableDataExtend(type,materialId){
+         $('#materialExtendData').datagrid({
+             height:200,
+             rownumbers: false,
+             //动画效果
+             animate:false,
+             //选中单行
+             singleSelect : true,
+             collapsible:false,
+             selectOnCheck:false,
+             //单击行是否选中
+             checkOnSelect : false,
+             pagination: false,
+             //交替出现背景
+             striped : true,
+             showFooter: true,
+             //loadFilter: pagerFilter,
+             onClickRow: onClickRow,
+             columns:[[
+                 { field: 'Id',field: 'Id',width:35,align:"center",checkbox:true},
+                 { title: '条码',field: 'BarCode',editor:'validatebox',width:200},
+                 { title: '单位',field: 'CommodityUnit',editor:'validatebox',width:70},
+                 { title: '采购价',field: 'PurchaseDecimal',editor:'validatebox',width:70},
+                 { title: '零售价',field: 'CommodityDecimal',editor:'validatebox',width:70},
+                 { title: '销售价',field: 'WholesaleDecimal',editor:'validatebox',width:70},
+                 { title: '最低售价',field: 'LowDecimal',editor:'validatebox',width:70},
+             ]],
+             toolbar:[
+                 {
+                     id:'append',
+                     text:'新增',
+                     iconCls:'icon-add',
+                     handler:function()
+                     {
+                         append(1); //新增
+                     }
+                 },
+                 {
+                     id:'delete',
+                     text:'删除',
+                     iconCls:'icon-remove',
+                     handler:function()
+                     {
+                         removeit(); //删除
+                     }
+                 },
+                 {
+                     id:'reject',
+                     text:'撤销',
+                     iconCls:'icon-undo',
+                     handler:function()
+                     {
+                         reject(); //撤销
+                     }
+                 },
+                 {
+                     id:'tips',
+                     text:'【注意：基础单位必须排在第一个】'
+                 }
+             ],
+             onBeforeDrag : function(row) {
+                 //首次进来可以拖动
+                 if (editIndex !== undefined) {
+                     return false;
+                 }
+             },
+             onLoadSuccess:function(){
+                 $(this).datagrid('enableDnd');
+             },
+             onLoadError:function()
+             {
+                 $.messager.alert('页面加载提示','页面加载异常，请稍后再试！','error');
+                 return;
+             }
+         });
+         $.ajax({
+             type:"get",
+             url: '/materialsExtend/getDetailList',
+             data: {
+                 materialId: materialId
+             },
+             dataType: "json",
+             success: function (res) {
+                 if(res && res.code === 200) {
+                     $("#materialExtendData").datagrid('loadData',res.data);
+                     if(type === "add") {
+                         $("#materialDlg #append").click(); //新增行
+                     }
+                 }
+             },
+             error:function() {
+                 $.messager.alert('查询提示','查询数据后台异常，请稍后再试！','error');
+             }
+         });
+         dgResize();
+     }*/
+
+    //检查商品名称是否存在 ++ 重名无法提示问题需要跟进
+    function checkIsExist() {
+        var mName = $.trim($("#goodsName").val());
+
+        //表示是否存在 true == 存在 false = 不存在
+        var flag = false;
+        //开始ajax名称检验，不能重名(新增或编辑)
+        if (materialID == 0 || (materialID != 0 &&
+            (mName != oldName))) {
+            $.ajax({
+                type: "get",
+                url: "/sample/checkIsNameExist",
+                dataType: "json",
+                async: false,
+                data: ({
+                    id: materialID,
+                    name: mName,
+                }),
+                success: function (res) {
+                    if (res && res.code === 200) {
+                        if (res.data && res.data.status) {
+                            flag = res.data.status;
+                            if (flag) {
+                                $.messager.alert('提示', '商品信息已经存在', 'info');
+                                return;
+                            }
+                        }
+                    }
+                },
+                //此处添加错误处理
+                error: function () {
+                    $.messager.alert('提示', '检查商品信息是否存在异常，请稍后再试！', 'error');
+                    return;
+                }
+            });
+        }
+        return flag;
+    }
+
+    //保存信息
+    $("#saveSample").off("click").on("click", function () {
+        if (!$('#goodsName').val()) {
+            $.messager.alert('提示', '品名不能为空！', 'warning');
+            return;
+        }
+        /*  if (!$('#companySku').val()) {
+              $.messager.alert('提示', '公司SKU不能为空！', 'warning');
+              return;
+          }
+          if (!$('#fnsku').val()) {
+              $.messager.alert('提示', 'FNSKU不能为空！', 'warning');
+              return;
+          }*/
+        /* if(!$("#Unit").val() && !$("#manyUnit").val()) {
+             $.messager.alert('提示', '单位为必填项！', 'warning');
+             return;
+         }*/
+        /*if ($("#materialExtendData").datagrid('getRows').length==0){
+            $.messager.alert('提示', '请录入条码及相关信息！', 'warning');
+            return;
+        }*/
+        //检验商品是否存在
+        if (checkIsExist()) {
+            return;
+        }
+        var objInfo = $("#sampleFM").serializeObject();
+
+        /*objInfo.UnitId = $("#manyUnit").val();
+        objInfo.CategoryId =$("#parentId").val();*/
+        //初始库存信息
+        /*   var stockArr = [];
+           $("#initDepot input").each(function () {
+               var id = $(this).attr("data-id");
+               var val = $(this).val();
+               var stockObj = {};
+               stockObj.depotId = id;
+               stockObj.number = val;
+               stockArr.push(stockObj);
+           });
+           /!*objInfo = accept(objInfo); //商品价格扩展*!/
+           objInfo.stock = JSON.stringify(stockArr);*/
+        $.ajax({
+            type: "post",
+            url: url,
+            dataType: "json",
+            async: false,
+            data: ({
+                info: JSON.stringify(objInfo)
+            }),
+            success: function (res) {
+                if (res && res.code === 200) {
+                    $('#sampleDlg').dialog('close');
+                    //加载完以后重新初始化
+                    var opts = $("#tableData").datagrid('options');
+                    showMaterialDetails(opts.pageNumber, opts.pageSize);
+                }
+            },
+            //此处添加错误处理
+            error: function () {
+                $.messager.alert('提示', '保存商品信息异常，请稍后再试！', 'error');
+                return;
+            }
+        });
+
+        $("#sampleFM").form('clear');
+        $('#Img').attr('src', '');
+        //
+        //
+        //$('#chooseFile').filebox({prompt: ''});
+    });
+
+    /*var mId = 0, mName = "";
+    //根据id查询类型信息
+    function findByTypeId(Id) {
+        $.ajax({
+            type: "get",
+            url: "/materialCategory/findById",
+            data: ({
+                id: Id
+            }),
+            //设置为同步
+            async: false,
+            dataType: "json",
+            success: function (res) {
+                if(res && res.code === 200) {
+                    mId = res.data.parentId;
+                    mName = res.data.name;
+                }
+            }
+        });
+    }*/
+
+    //编辑信息
+    function editMaterial(index) {
+        /*$("#materialFM").form('clear');
+        $('#Img').attr("src", "");
+        $('#chooseFile').filebox("clear");*/
+        var rowsdata = $("#tableData").datagrid("getRows")[index];
+        //bindMProperty(); //根据商品属性绑定
+        $("#goodsName").focus().textbox("setValue", rowsdata.goodsName);
+        //$("#EnableSerialNumber").val(rowsdata.enableSerialNumber=='1'?'1':'0');
+        //商品类别id
+        //$("#parentId").val(rowsdata.categoryId);
+        //商品类别名称
+        // $("#parentName").textbox("setValue", rowsdata.categoryName);
+        //mId = rowsdata.categoryId;
+        //mName = rowsdata.categoryName;
+        /*    {title: '规格描述', field: 'specDesc', width: 100},
+            {title: '需求数量', field: 'demaQuan', width: 100},
+            {title: '立项日期', field: 'statrData', width: 100},
+            {title: '需交付日期', field: 'endData', width: 100},
+            {title: '备注', field: 'remarks', width: 100},
+            {title: '状态', field: 'state', width: 100,*/
+        $("#brand").textbox("setValue", rowsdata.brand);
+        $("#factoryNumber").textbox("setValue", rowsdata.factoryNumber);
+        $("#Img").attr("src", rowsdata.imges);
+        //$('#chooseFile').filebox({prompt:rowsdata.image});
+        $('#pic').attr("value", rowsdata.imges);
+        $("#demaQuan").textbox("setValue", rowsdata.demaQuan);
+        $("#statrData").textbox("setValue", rowsdata.statrData);
+        $("#endData").textbox("setValue", rowsdata.endData);
+        $("#sjendData").textbox("setValue", rowsdata.sjendData);
+        $("#remarks").textbox("setValue", rowsdata.remarks);
+        $("#specDesc").textbox("setValue", rowsdata.specDesc);
+
+        /*  if (rowsdata.unitId) {
+              $("#manyUnitCheck").prop("checked", true);
+              //当前为选中状态
+              $("#Unit").hide();
+              $("#manyUnit").show();
+          }
+          else {
+              $("#manyUnitCheck").prop("checked", false);
+              //当前为不选中状态
+              $("#Unit").show();
+              $("#manyUnit").hide();
+          }*/
+        /* initTableDataExtend('edit',rowsdata.id);*/
+        oldName = rowsdata.goodsName;
+
+        //打开增加商品窗口的操作
+        $('#sampleDlg').dialog('open').dialog('setTitle', '<img src="/js/easyui/themes/icons/pencil.png"/>&nbsp;编辑商品信息');
+        $(".window-mask").css({width: webW, height: webH});
+        if (!isShowOpFun()) {
+            $("#saveSample").hide();
+        }
+        materialID = rowsdata.id;
+        //焦点在名称输入框==定焦在输入文字后面
+        $("#goodsName").val("").focus().val(rowsdata.goodsName);
+        //选中基本资料tab
+        $("#sampleFM #tt .tabs").first().click();
+        url = '/sample/update?id=' + rowsdata.id;
+        /*initDepotList(rowsdata.id); *///加载仓库列表页面
+    }
+
+    //加载仓库模板
+    /*function initDepotList(mId) {
+        //获取仓库数据
+        $.ajax({
+            type: "get",
+            url: "/depot/getAllListWithStock?mId=" + mId,
+            dataType: "json",
+            async: false,
+            success: function (res) {
+                if (res && res.code == 200) {
+                    var json = {};
+                    json.depotList = res.data;
+                    $.ajax({
+                        type: "get",
+                        url: "../../../pages/template/init_depot_list.html?2121",
+                        async: false,
+                        success: function (tem) {
+                            if (tem) {
+                                //预编译模板
+                                var template = Handlebars.compile(tem);
+                                //把数据填充到模板当中
+                                var htmlValue = template(json);
+                                //把填充好数据的模板放进div
+                                $("#initDepot").html(htmlValue);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }*/
+    //删除后的页面
+    function DeletedRefresh() {
+        showMaterialDetails(UserpageNum, initPageSize);
+        var opts = $("#tableData").datagrid('options');
+        var pager = $("#tableData").datagrid('getPager');
+        opts.pageNumber = UserpageNum;
+        opts.pageSize = initPageSize;
+        pager.pagination('refresh', {
+            pageNumber: UserpageNum,
+            pageSize: initPageSize
+        });
+    }
+
+    //搜索处理
+    $("#searchBtn").unbind().bind({
+        click: function () {
+            showMaterialDetails(1, initPageSize);
+            var opts = $("#tableData").datagrid('options');
+            var pager = $("#tableData").datagrid('getPager');
+            opts.pageNumber = 1;
+            opts.pageSize = initPageSize;
+            pager.pagination('refresh', {
+                pageNumber: 1,
+                pageSize: initPageSize
+            });
+        }
+    });
+
+    function showMaterialDetails(pageNo, pageSize) {
+        /*var barCode = $.trim($("#searchBarCode").val());*/
+        var name = $.trim($("#searchName").combobox("getValue"));
+        /*var companySku = $.trim($("#searchCompanySku").val());
+        var fnsku = $.trim($("#searchFnsku").val());*/
+        var brand = $.trim($("#searchBrand").val());
+        /* var standard = $.trim($("#searchStandard").val());
+         var model = $.trim($("#searchModel").val());*/
+        $.ajax({
+            type: "get",
+            url: "/sample/list",
+            dataType: "json",
+            data: ({
+                search: JSON.stringify({
+                    name: name,
+                    brand: brand
+                }),
+                currentPage: pageNo,
+                pageSize: pageSize
+            }),
+            success: function (res) {
+                if (res && res.code === 200) {
+                    if (res.data && res.data.page) {
+                        $("#tableData").datagrid('loadData', res.data.page);
+                    }
+                }
+            },
+            //此处添加错误处理
+            error: function () {
+                $.messager.alert('查询提示', '查询数据后台异常，请稍后再试！', 'error');
+                return;
+            }
+        });
+    }
+
+    //重置按钮
+    $("#searchResetBtn").unbind().bind({
+        click: function () {
+            /*      $("#searchBarCode").textbox("clear");
+                  $("#searchParentName").textbox("clear");
+                  $("#searchParentId").val("");*/
+            $("#searchName").combobox("clear");
+            $("#searchBrand").textbox("clear");
+            /*$("#searchStandard").textbox("clear");
+            $("#searchModel").textbox("clear");*/
+            //  types = ""; //清空类别
+            //加载完以后重新初始化
+            $("#searchBtn").click();
+        }
+    });
+
+    //绑定事件
+    /*   function bindEvent() {
+           //下拉绑定事件
+           $.ajax({
+               type: "get",
+               url: "/unit/list",
+               dateType: "json",
+               data: ({
+                   currentPage: 1,
+                   pageSize: 100
+               }),
+               success: function (res) {
+                   res = JSON.parse(res);
+                   if(res && res.code === 200){
+                       if(res.data && res.data.page) {
+                           res = res.data.page.rows;
+                           var options = "";
+                           console.log(res.length);
+                           if (res.length) {
+                               for (var i = 0; i < res.length; i++) {
+                                   options += '<option value="' + res[i].id + '">' + res[i].name + '</option>';
+                               }
+                               $("#manyUnit").empty().append('<option value="">(空)</option>').append(options);
+                               //下拉框事件
+                               $("#manyUnit").off("change").on("change", function () {
+                                   var selectItem = $(this).children('option:selected').text();
+                                   if (selectItem !== "(空)") {}
+                               });
+                           }
+                       }
+                   }
+               },
+               error: function () {
+                   $.messager.alert('查询提示', '查询数据后台异常，请稍后再试！', 'error');
+                   return;
+               }
+           });
+*/
+    //导入excel表格
+    $("#saveimport").off("click").on("click", function () {
+        if ($("#sampleFile").val().length == 0) {
+            $.messager.alert('提示-3-', '请选择文件哦！', 'info');
+            return;
+        }
+        $("#importExcelFM").submit();
+        $('#importExcelDlg').dialog('close');
+
+        $.messager.progress({
+            title: '请稍候',
+            msg: '数据处理ing...'
+        });
+        setTimeout(function () {
+            $.messager.progress('close');
+            var opts = $("#tableData").datagrid('options');
+            showMaterialDetails(opts.pageNumber, opts.pageSize);
+        }, 3300);
+    });
+
+    //商品类别选择
+    //点击放大镜弹出类别的窗口
+    function materialCategoryDlgFun() {
+        $('#forSelectMaterialCategoryDlg').dialog({
+            title: '商品类别选择',
+            width: webW / 2,
+            height: webH / 2,
+            closed: false,
+            cache: false,
+            href: '/pages/materials/materialcategory_forselect.html',
+            modal: true,
+            resizable: true
+        });
+    }
+
+    //查询父级商品类别
+    //搜索里面类别的放大镜
+    $("#lookForSelectMaterialCategory").on("click", function () {
+        clickType = "selectBtn";
+        materialCategoryDlgFun();
+    });
+    //添加商品类别里面的放大镜
+    $("#lookForMaterialCategory").on("click", function () {
+        clickType = "editBtn";
+        materialCategoryDlgFun();
+    });
+    /* //单击
+     function onClickRow(index) {
+         if (editIndex != index) {
+             if (endEditing()) {
+                 $('#materialExtendData').datagrid('selectRow', index)
+                     .datagrid('beginEdit', index);
+                 editIndex = index;
+             } else {
+                 $('#materialExtendData').datagrid('selectRow', editIndex);
+             }
+         }
+     }*/
+
+    /* //结束编辑
+     function endEditing() {
+         if (editIndex == undefined) { return true }
+         if ($('#materialExtendData').datagrid('validateRow', editIndex)) {
+             $('#materialExtendData').datagrid('endEdit', editIndex);
+             editIndex = undefined;
+             return true;
+         } else {
+             return false;
+         }
+     }*/
+
+    /*   //新增
+       function append(type)  {
+           if (endEditing()) {
+               $('#materialExtendData').datagrid('appendRow', {});
+               editIndex = $('#materialExtendData').datagrid('getRows').length - 1;
+               $('#materialExtendData').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+               var ed = $('#materialExtendData').datagrid('getEditor', {index:editIndex,field:'BarCode'});
+               if(type ==1) {
+                   if(thisBarCode) {
+                       thisBarCode = Number(thisBarCode)+1;
+                   } else {
+                       thisBarCode = "1000";
+                   }
+               }
+               $(ed.target).val(thisBarCode);
+           }
+       }*/
+
+    //查询最新条码
+    /*function getMaxBarCode(){
+        var barCode = "";
+        $.ajax({
+            type:"get",
+            url: '/material/getMaxBarCode',
+            async: false,
+            dataType: "json",
+            success: function (res) {
+                if(res && res.code === 200) {
+                    barCode = res.data.barCode;
+                }
+            },
+            error:function() {
+                $.messager.alert('查询提示','查询数据后台异常，请稍后再试！','error');
+            }
+        });
+        return barCode;
+    }*/
+
+    /* //删除
+     function removeit() {
+         if (editIndex == undefined) { return }
+         $('#materialExtendData').datagrid('cancelEdit', editIndex)
+             .datagrid('deleteRow', editIndex);
+         editIndex = undefined;
+     }*/
+
+    /*     //撤销
+         function reject() {
+             $('#materialExtendData').datagrid('rejectChanges');
+             editIndex = undefined;
+         }
+ */
+    //判断
+    /*function CheckData() {
+        var row = $('#materialExtendData').datagrid('getRows');
+        var totalRowNum = "";
+        var totalBarCodeOverNum = "";
+        for (var i = 0; i < row.length; i++) {
+            if (row[i].BarCode == "") {
+                totalRowNum += (i + 1) + "、";
+            }
+            if (row[i].CommodityUnit == "") {
+                totalRowNum += (i + 1) + "、";
+            }
+            if (row[i].BarCode.length > 15) {
+                totalBarCodeOverNum += (i + 1) + "、";
+            }
+        }
+        if (totalRowNum != "") {
+            var totalRowNum = totalRowNum.substring(0, totalRowNum.length - 1);
+            $.messager.alert('提示',"第" + totalRowNum + "行数据填写不完整！",'info');
+            return false;
+        }
+        if (totalBarCodeOverNum != "") {
+            var totalBarCodeOverNum = totalBarCodeOverNum.substring(0, totalBarCodeOverNum.length - 1);
+            $.messager.alert('提示',"第" + totalBarCodeOverNum + "行条码长度超过15位！",'info');
+            return false;
+        }
+        return true;
+    }*/
+
+    //商品价格扩展
+    /*  function accept(objInfo) {
+          append(0);
+          removeit();
+          //在更新商品信息的时候更新排序
+          var sortList = [];
+          //判断单位是否填写正确
+          var meList = $("#materialExtendData").datagrid('getRows');
+          var unit = $("#Unit").val();
+          var manyUnitselected = $("#manyUnit").find("option:selected").text();
+          for(var i=0; i<meList.length; i++) {
+              var commodityUnit = meList[i].CommodityUnit;
+              if(unit) {
+                  if(commodityUnit != unit) {
+                      $.messager.alert('提示', '单位<b>' + commodityUnit + '</b>不包含在<b>' + unit + '</b>中！', 'warning');
+                      return;
+                  }
+              } else if(manyUnitselected) {
+                  var manyUnitInfo = manyUnitselected.substring(0, manyUnitselected.indexOf("("));
+                  var unitArr = manyUnitInfo.split(",");
+                  if(commodityUnit != unitArr[0] && commodityUnit != unitArr[1]) {
+                      $.messager.alert('提示', '单位<b>' + commodityUnit + '</b>不包含在<b>' + manyUnitInfo+ '</b>中！', 'warning');
+                      return;
+                  }
+              }
+          }
+          for(var i=0; i<meList.length;i++) {
+              var sortObj = {};
+              if(meList[i].Id) {
+                  sortObj.id=meList[i].Id;
+                  if(i==0) {
+                      sortObj.defaultFlag=1;
+                  } else {
+                      sortObj.defaultFlag=0;
+                  }
+                  sortList.push(sortObj);
+              }
+          }
+          objInfo.sortList = sortList;
+          if ($("#materialExtendData").datagrid('getChanges').length) {
+              if (!CheckData())
+                  return false;
+              objInfo.inserted = $("#materialExtendData").datagrid('getChanges', "inserted");
+              objInfo.deleted = $("#materialExtendData").datagrid('getChanges', "deleted");
+              objInfo.updated = $("#materialExtendData").datagrid('getChanges', "updated");
+          }
+          if (endEditing()) {
+              $('#materialExtendData').datagrid('acceptChanges');
+          }
+          return objInfo;
+      }*/
+
+    //鼠标放上去
+    function bigImg(imgObj, index) {
+        var rowsdata = $("#tableData").datagrid("getRows")[index];
+        var picdialog = $("#picdialog");
+        var imgid = $("#imgid");
+        if ((imgObj == undefined || imgObj == null || imgObj.length == 0)
+            || ($(imgObj).attr("src") == "")) {
+            // $.messager.alert('提示', "该图片无法打开！");
+            return;
+        }
+        var img = new Image();
+        img.src = $(imgObj).attr("src");
+        var smallsrc = $(imgObj).attr("src");
+        //小图路径换成大图路径
+        var picsrc = smallsrc.replace(/_small/, rowsdata.image);
+        img.src = picsrc;
+        var imgWidth = "";
+        var imgHeight = "";
+        var imgProportion = "";
+        // 显示宽度
+        if (imgWidth != null && imgWidth != "") {
+            img.width = imgWidth;
+        }
+        // 显示高度
+        if (imgHeight != null && imgHeight != "") {
+            img.height = imgHeight;
+        }
+        // 显示比例设置
+        if (imgProportion != null && imgProportion != "") {
+            img.width = img.width * parseFloat(imgProportion) / 100;
+            img.height = img.height * parseFloat(imgProportion) / 100;
+        }
+        // 保持图片纵横比的情况下，取得能够在$(window)中放得下的大小
+        var heightWidthPropor = img.height / img.width;
+        var width = $(window).width() * 0.8 >= img.width ? img.width * 0.5 : $(window).width() * 0.5;
+        var height;
+        if ($(window).height() * 0.8 < width * heightWidthPropor) {
+            height = $(window).height() * 0.4;
+            width = height / heightWidthPropor;
+        } else {
+            height = width * heightWidthPropor;
+        }
+        imgid.css("height", height + "px");
+        imgid.css("max-height", height + "px");
+        if (imgWidth != null && imgWidth != "") {
+            imgid.css("width", width + "px");
+            imgid.css("max-width", width + "px");
+        }
+
+        picdialog.css("width", width + "px");
+        picdialog.css("height", height + 5 + "px");
+
+        imgid.css("overflow", "hidden");
+
+        //设置图片路径
+        imgid.attr('src', img.src);
+        picdialog.window('center');
+        // 解决关闭按钮位置问题
+        $("div.panel-header.panel-header-noborder.window-header").css("width", "auto");
+        picdialog.window("open");
+    }
+
+    //鼠标移走
+    function closeImg() {
+        $("#picdialog").window("close");
+    }
+
+    //關閉添加信息窗口
+    function closematerialDlg() {
+
+        $("#sampleFM").form('clear');
+        $('#Img').attr('src', '');
+        $("#sampleDlg").dialog('close');
+    }
+
+    function follYes(index) {
+        var rowsdata = $("#tableData").datagrid("getRows")[index];
+        $.ajax({
+            type: "post",
+            url: "/sample/follYes",
+            dataType: "json",
+            data: ({
+                id: rowsdata.id
+            }),
+            success: function (res) {
+                if (res && res.code == 200) {
+                    DeletedRefresh()
+                }
+            }
+        });
+    }
+
+</script>

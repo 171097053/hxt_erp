@@ -1,0 +1,17 @@
+[
+  {
+    cusNo: 1,
+    cusName: "马超",
+    spc:"大大",
+    ZJc:"ddd",
+    qty:5,
+    qtyYwg: 6,
+    qtyPs: 1,
+    qtyWfh: 2,
+    qtyKp:1,
+    qtyWk:1,
+    amtn:1,
+    amtnSk:1,
+    amtnWk:1
+  }
+]
